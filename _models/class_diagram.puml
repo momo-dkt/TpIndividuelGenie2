@@ -1,0 +1,109 @@
+@startuml
+!include _common.style
+
+title Poker Game (Structure)
+center footer project #1 - class diagram
+
+
+package uqam.inf5153.poker {
+
+  class Main {
+      + {static} main(args: String[])
+      --
+      + {static} entreManuelle()
+      + {static}ligneDeCommande(args:String[])
+      + {static}validationNouvellePartie():char
+      + {static}saisieNbrJoueurs(nbrJoueursActuel: int):int
+      + {static}saisieMain(nbrJoueursEnPus: int ,nbrTotal: int ):String[]
+    }
+
+    class Arbitre{
+      + trouverGagnant(joueurs:ArrayList<Joueur>):ArrayList<Optional<Joueur>>
+      + maxValeurGagnant(joueur:ArrayList<Joueur>):ArrayList<Optional<Joueur>>
+      + trouverCombinaison(joueurs:ArrayList<Joueur>)
+      + detectionFlush( joueur:Joueur):Optional<Couleur>
+      + detectionPair( joueur:Joueur):Optional<Valeur>
+      + maxVal( m:MainJoueur):Optional<Valeur>
+      +  verificationMain( carteJoueurs:String []):boolean
+      + afficherVainqueur( gagnant:ArrayList<Optional<Joueur>>,listeJoueurs:ArrayList<Joueur>):String
+      -  getTable():Map<Character, Integer>
+    }
+
+    interface RegleDuJeu{
+       + trouverGagnant(joueurs:ArrayList<Joueur>):ArrayList<Optional<Joueur>>
+       + detectionFlush( joueur:Joueur):Optional<Couleur>
+       + detectionPair( joueur:Joueur):Optional<Valeur>
+       + maxVal( m:MainJoueur):Optional<Valeur>
+       +  verificationMain( carteJoueurs:String []):boolean
+       + maxValeurGagnant(joueur:ArrayList<Joueur>):ArrayList<Optional<Joueur>>
+    }
+
+    class Carte{
+        - valeurCarte:Valeur
+        - couleurCarte:Couleur
+        --
+        + this( valeurCarte:Valeur, couleurCarte:Couleur)
+        # getValeurCarte():Valeur
+        # getCouleurCarte():Couleur
+    }
+
+    enum Couleur{
+       - couleur :char
+       --
+       - this( couleur:char)
+       #  getCouleur():char
+       +{static} analogieCouleur( couleurCarte:char):Optional<Couleur>
+       +{static}  inclus( couleurCarte:char):boolean
+    }
+
+    enum Valeur{
+      -  val:char;
+      --
+      - this( val:char)
+      #  getValeur():char
+      +{static} analogieValeur( valeurCarte:char):Optional<Valeur>
+      +{static} compris( valeurCarte:char):boolean
+    }
+
+    class Joueur{
+       + nom:String
+       -   cartes:MainJoueur
+       +  victoires:int
+       --
+       +this( cartes:MainJoueur, victoires:int, nom:String)
+       #  getCartes():MainJoueur
+    }
+
+    class MainJoueur{
+      - main:ArrayList<Carte>;
+      -  combinaison:String;
+      - valeurMaximale:Valeur;
+      --
+      + this(main:ArrayList<Carte>)
+      # getMain():ArrayList<Carte>
+      #  getCombinaison():String
+      # setCombinaison(comp:String )
+      # setValeurMaximale( valeur:Valeur)
+      #  getValeurMaximale():Valeur
+    }
+
+    class TableDeJeu{
+      + initialisationDonnees(args:String[], nbrJoueurs:int):ArrayList<Joueur>
+    }
+
+    Main-Arbitre
+    Main - TableDeJeu
+    TableDeJeu--Valeur
+    TableDeJeu--Couleur
+    TableDeJeu"1"--"*"Joueur
+    TableDeJeu"1"--"*"MainJoueur
+    Arbitre--MainJoueur
+    Carte"*"-->"1"Couleur
+    Carte"*"-->"1"Valeur
+    MainJoueur"1" *--> "5" Carte
+    Joueur"1"-->"1"MainJoueur
+    Arbitre --|> RegleDuJeu : <<realize>>
+
+}
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+!include _common.style
+
+title Poker Game (Object)
+center footer project #1 - object diagram
+
+object "m: Main" as M {
+  result = null
+}
+
+object "a: Arbitre" as A {
+
+}
+
+object "mj: MainJoueur" as MJ {
+ - main:Arraylist<Carte>
+ - combinaison:String
+ - valeurMaximale:Valeur
+
+
+}
+
+object "j: Joueur" as J {
+ + nom:String
+ - cartes:MainJoueur
+ + victoire:int
+
+}
+
+object "c: Carte" as C {
+    - valeurCarte:Valeur
+    - couleurCarte:Couleur
+
+}
+
+M -- A
+A - MJ
+A -- J
+MJ - C
+
+@enduml

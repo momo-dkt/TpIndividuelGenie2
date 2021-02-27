@@ -1,0 +1,47 @@
+@startuml
+!include _common.style
+
+title Poker Game (Behavior)
+center footer project #1 - sequence diagram
+
+participant "_: Main" as M
+actor "Arbitre" as A
+participant "MainJoueur" as MJ
+
+activate M
+M ->> A: trouverCombinaison(listeJoueurs: Arraylist<Joueur>)
+activate A
+     loop |i<(listeJoueurs.length)|
+       A -> A : Optional<Couleur>flush=detectionFlush(listeJoueurs[i])
+       A -> A : Optional<Valeur>pair=detectionPair(listeJoueurs[i])
+       A -> A : Optional<Valeur>plusHauteCarte=maxVal(listeJoueurs[i])
+        alt |flush.isPresent()|
+        activate MJ
+           A ->> MJ : listeJoueurs[i].mains.setCombinaison("Couleur")
+        else |pair.isPresent()|
+           A ->> MJ : listeJoueurs[i].mains.setCombinaison("Paire")
+        else |plusHauteCarte.isPresent()|
+           A ->> MJ : listeJoueurs[i].mains.setCombinaison("PlusHauteCarte")
+        end
+        deactivate MJ
+     end
+     A -->M:
+
+M -> A: trouverGagnant(listeJoueurs: Arraylist<Joueur>)
+
+
+A --> M: gagnant
+M -> A: afficherVainqueur(joueurGagnant:Joueur, listeJoueurs: Arraylist<Joueur> )
+A --> M: affichage
+
+deactivate A
+deactivate M
+
+
+
+
+
+
+deactivate A
+
+@enduml
